@@ -6,6 +6,7 @@ const BASE = "https://www.sankavollerei.web.id";
 // Setelah itu koleksi dikelola dari dalam app (cari, tambah, hapus).
 const ANIME = [
   { source: "otakudesu", slug: "enen-shouboutai-season-3-p2-sub-indo", title: "Enen no Shouboutai S3 P2", poster: "" },
+  { source: "otakudesu", slug: "1piece-sub-indo", title: "One Piece", poster: "" },
   { source: "otakudesu", slug: "lv999-murabito-sub-indo", title: "Lv999 no Murabito", poster: "" },
 ];
 
