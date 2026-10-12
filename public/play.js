@@ -57,3 +57,30 @@ async function play(a, slug, label) {
     choose(0);
   } catch (e) { root.innerHTML = backBtn() + fail(e); }
 }
+
+// Menimpa detail(): label episode pendek ("Ep 13") dan info ringkas.
+async function detail(a) {
+  root.innerHTML = backBtn() + `<h1>${esc(a.title)}</h1><p class="hint">Memuat…</p>`;
+  try {
+    const d = await api("detail/" + encodeURIComponent(a.slug));
+    const eps = findEpisodes(d);
+    if (!eps) { root.innerHTML = backBtn() + `<h1>${esc(a.title)}</h1>` + raw(d); return; }
+    const x = d.data || d;
+    const poster = a.poster || x.poster || findStr(d, /poster|image|thumb|cover/i);
+    const syn = (x.synopsis && Array.isArray(x.synopsis.paragraphs) && x.synopsis.paragraphs.join(" ")) || findStr(d, /synopsis|sinopsis|description/i);
+    const info = [x.status, x.score && "skor " + x.score, x.episodes && x.episodes + " episode"].filter(Boolean).join(", ");
+    root.innerHTML = backBtn() + `<h1>${esc(a.title)}</h1>` +
+      (poster ? `<img class="poster" src="${esc(poster)}" referrerpolicy="no-referrer" alt="">` : "") +
+      (info ? `<p class="hint">${esc(info)}</p>` : "") +
+      (syn ? `<p class="hint">${esc(syn.slice(0, 400))}</p>` : "") +
+      '<div style="clear:both"></div><div class="eps">' + eps.map((ep, i) => {
+        const label = ep.eps != null ? "Ep " + ep.eps : (ep.title || ep.episode || ep.name || "Ep " + (i + 1));
+        return `<button data-i="${i}" title="${esc(ep.title || "")}">${esc(String(label).slice(0, 24))}</button>`;
+      }).join("") + "</div>";
+    root.querySelectorAll(".eps button").forEach((b) => b.onclick = () => {
+      const ep = eps[b.dataset.i];
+      const slug = last(ep.slug || ep.endpoint || ep.episodeId || ep.id || "");
+      go(() => play(a, slug, a.title + " - " + b.textContent));
+    });
+  } catch (e) { root.innerHTML = backBtn() + fail(e); }
+}
