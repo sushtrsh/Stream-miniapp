@@ -31,6 +31,7 @@ pre{white-space:pre-wrap;word-break:break-all;font-size:11px;background:var(--ca
 </head>
 <body>
 <div id="app"></div>
+<script src="config.js"></script>
 <script>
 const tg = window.Telegram && Telegram.WebApp;
 if (tg) { tg.ready(); tg.expand(); }
@@ -40,7 +41,7 @@ const stack = [];
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const last = (s) => String(s).split("/").filter(Boolean).pop();
 
-async function api(path) {
+async function apiOld(path) {
   const r = await fetch("/api/" + path);
   if (!r.ok) throw new Error("HTTP " + r.status);
   return r.json();
