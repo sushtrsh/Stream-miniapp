@@ -1,17 +1,19 @@
 // Konfigurasi + akses ApiSanka langsung dari browser pengguna (IP pengguna,
-// bukan IP server). Dimuat SEBELUM script utama di index.html.
+// bukan IP server). Dimuat SEBELUM script utama.
 const BASE = "https://www.sankavollerei.web.id";
 
-// GANTI dengan anime pilihanmu (dua baris ini contoh dari dokumentasi).
+// Koleksi awal: hanya dipakai saat app pertama kali dibuka di sebuah perangkat.
+// Setelah itu koleksi dikelola dari dalam app (cari, tambah, hapus).
 const ANIME = [
   { source: "otakudesu", slug: "enen-shouboutai-season-3-p2-sub-indo", title: "Enen no Shouboutai S3 P2", poster: "" },
   { source: "otakudesu", slug: "lv999-murabito-sub-indo", title: "Lv999 no Murabito", poster: "" },
 ];
 
 // Path tiap source berbeda-beda (otakudesu tanpa awalan nama source).
-const P = (detail, episode, server) => ({ detail, episode, server });
+// Urutan: detail, episode, server, search (search hanya otakudesu yang sudah diuji).
+const P = (detail, episode, server, search) => ({ detail, episode, server, search });
 const PATHS = {
-  otakudesu:   P("/anime/anime/", "/anime/episode/", "/anime/server/"),
+  otakudesu:   P("/anime/anime/", "/anime/episode/", "/anime/server/", "/anime/search/"),
   samehadaku:  P("/anime/samehadaku/anime/", "/anime/samehadaku/episode/", "/anime/samehadaku/server/"),
   animasu:     P("/anime/animasu/detail/", "/anime/animasu/episode/"),
   anoboy:      P("/anime/anoboy/anime/", "/anime/anoboy/episode/"),
@@ -24,7 +26,7 @@ const PATHS = {
 };
 
 // Batas ApiSanka 45 request/menit per IP (3x peringatan lalu ban), jadi hasil di-cache.
-const TTL = { detail: 3600, episode: 600, server: 300 }; // detik
+const TTL = { detail: 3600, episode: 600, server: 300, search: 600 }; // detik
 
 async function cached(url, ttl) {
   const k = "c:" + url;
@@ -39,19 +41,13 @@ async function cached(url, ttl) {
   return data;
 }
 
-// Dipanggil index.html: list | detail/:slug | episode/:slug?s=SRC | server/:id?s=SRC
+// Dipanggil app: detail/:slug?s=SRC | episode/:slug?s=SRC | server/:id?s=SRC | search/:kata?s=SRC
 async function api(path) {
-  if (path === "list") return ANIME;
   const [route, query = ""] = path.split("?");
   const [kind, rawId] = route.split("/");
   const id = decodeURIComponent(rawId || "");
-  let source = new URLSearchParams(query).get("s");
-  if (kind === "detail") {
-    const item = ANIME.find((a) => a.slug === id);
-    if (!item) throw new Error("anime tidak ada di daftar");
-    source = item.source;
-  }
+  const source = new URLSearchParams(query).get("s") || "otakudesu";
   const p = PATHS[source];
-  if (!p || !p[kind]) throw new Error("source tidak didukung");
+  if (!p || !p[kind]) throw new Error("source " + source + " tidak mendukung " + kind);
   return cached(BASE + p[kind] + encodeURIComponent(id), TTL[kind]);
 }
