@@ -5,61 +5,74 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Anime</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="config.js"></script>
 <style>
-:root{
-  --bg:var(--tg-theme-bg-color,#fff);--fg:var(--tg-theme-text-color,#111);
-  --hint:var(--tg-theme-hint-color,#888);--card:var(--tg-theme-secondary-bg-color,#f1f1f1);
-  --btn:var(--tg-theme-button-color,#2481cc);--btnfg:var(--tg-theme-button-text-color,#fff)
-}
-*{box-sizing:border-box}
-body{margin:0;padding:12px 12px calc(12px + env(safe-area-inset-bottom,0px));background:var(--bg);color:var(--fg);font:15px/1.4 system-ui,sans-serif}
-h1{font-size:18px;margin:4px 0 12px}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.card{background:var(--card);border-radius:10px;overflow:hidden;cursor:pointer}
-.card img{display:block;width:100%;aspect-ratio:3/4;object-fit:cover;background:#0002}
-.card p{margin:8px;font-size:13px}
-.eps{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px;margin-top:12px}
-button{background:var(--btn);color:var(--btnfg);border:0;border-radius:8px;padding:10px;font:inherit;cursor:pointer}
-button.alt{background:var(--card);color:var(--fg)}
-button.on{outline:2px solid var(--btn)}
-.player{display:block;width:100%;aspect-ratio:16/9;border:0;background:#000;border-radius:8px}
-.row{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
-.hint{color:var(--hint)}
-pre{white-space:pre-wrap;word-break:break-all;font-size:11px;background:var(--card);padding:8px;border-radius:8px;max-height:50vh;overflow:auto}
-.poster{float:left;width:96px;border-radius:8px;margin:0 12px 8px 0}
+:root{--bg:var(--tg-theme-bg-color,#fff);--fg:var(--tg-theme-text-color,#111);--hint:var(--tg-theme-hint-color,#7d7d85);--card:var(--tg-theme-secondary-bg-color,#f1f1f4);--btn:var(--tg-theme-button-color,#2481cc);--btnfg:var(--tg-theme-button-text-color,#fff);--r:14px}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.45 system-ui,sans-serif;padding:max(14px,env(safe-area-inset-top,0px)) 14px calc(28px + env(safe-area-inset-bottom,0px))}
+h1{font-size:20px;line-height:1.25;margin:2px 0 12px}
+h2{font-size:12px;font-weight:600;color:var(--hint);margin:16px 0 8px;text-transform:uppercase;letter-spacing:.04em}
+.hint{color:var(--hint);font-size:13px}
+.sub{font-size:13px;color:var(--hint);margin:-6px 0 12px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px 12px}
+.card{display:block;width:100%;padding:0;border:0;background:none;color:inherit;text-align:left;font:inherit;cursor:pointer}
+.card .im{aspect-ratio:2/3;border-radius:var(--r);background:var(--card);overflow:hidden;position:relative;transition:transform .12s}
+.card:active .im{transform:scale(.97)}
+.card img{width:100%;height:100%;object-fit:cover;display:block}
+.card .ph{position:absolute;inset:0;display:grid;place-items:center;font-size:32px;color:var(--hint)}
+.card p{margin:6px 2px 0;font-size:13px;font-weight:500;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.top{display:flex;gap:14px;margin-bottom:8px}
+.top img{width:104px;aspect-ratio:2/3;object-fit:cover;border-radius:var(--r);background:var(--card);flex:none}
+.meta{display:flex;flex-wrap:wrap;gap:6px;align-content:flex-start}
+.chip{background:var(--card);border-radius:99px;padding:3px 10px;font-size:12px}
+.syn{font-size:14px;margin:6px 0 0;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.syn.open{display:block}
+.link{background:none;border:0;color:var(--btn);padding:4px 0;font:inherit;font-size:13px;cursor:pointer}
+.btn{background:var(--btn);color:var(--btnfg);border:0;border-radius:12px;padding:12px 14px;font:inherit;font-weight:600;cursor:pointer;min-height:44px}
+.btn.alt{background:var(--card);color:var(--fg);font-weight:500}
+.btn.on{outline:2px solid var(--btn);outline-offset:-2px}
+.btn.full{width:100%}
+.btn:active{opacity:.8}
+.eps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.eps .btn{padding:10px 0;font-weight:500;background:var(--card);color:var(--fg)}
+.eps .btn.seen{opacity:.5}
+.eps .btn.cur{background:var(--btn);color:var(--btnfg);opacity:1}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+.row .btn{padding:9px 12px;font-weight:500;min-height:40px;font-size:14px}
+.row.two .btn{flex:1}
+.pl{aspect-ratio:16/9;border-radius:var(--r);overflow:hidden;background:#000;display:grid;place-items:center;color:#aaa;font-size:13px;text-align:center;padding:8px}
+.pl iframe,.pl video{width:100%;height:100%;border:0;display:block;background:#000}
+.sk{background:linear-gradient(90deg,var(--card) 25%,rgba(128,128,128,.12) 50%,var(--card) 75%);background-size:200% 100%;animation:sh 1.2s infinite;border-radius:var(--r)}
+@keyframes sh{to{background-position:-200% 0}}
+.err{text-align:center;padding:40px 8px}
+.bar{margin-bottom:10px}
+.bar .btn{padding:8px 12px;min-height:36px}
 </style>
 </head>
 <body>
 <div id="app"></div>
-<script src="config.js"></script>
 <script>
 const tg = window.Telegram && Telegram.WebApp;
 if (tg) { tg.ready(); tg.expand(); }
-const root = document.getElementById("app");
+const app = document.getElementById("app");
 const stack = [];
+let acts = {};
 
-const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const last = (s) => String(s).split("/").filter(Boolean).pop();
+const tap = () => { try { tg.HapticFeedback.impactOccurred("light"); } catch {} };
+const store = {
+  get(k, d) { try { const v = JSON.parse(localStorage.getItem(k)); return v ?? d; } catch { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
+};
 
-async function apiOld(path) {
-  const r = await fetch("/api/" + path);
-  if (!r.ok) throw new Error("HTTP " + r.status);
-  return r.json();
-}
-
-/* --- pembaca respons yang toleran, karena bentuk JSON ApiSanka belum pasti --- */
+/* ---------- pembaca data (tahan terhadap bentuk JSON yang beda) ---------- */
 function findEpisodes(o, d = 0) {
   if (!o || typeof o !== "object" || d > 4) return null;
   for (const [k, v] of Object.entries(o))
     if (/episode/i.test(k) && Array.isArray(v) && v.length && typeof v[0] === "object") return v;
   for (const v of Object.values(o)) { const r = findEpisodes(v, d + 1); if (r) return r; }
   return null;
-}
-function findStr(o, re, d = 0) {
-  if (!o || typeof o !== "object" || d > 4) return "";
-  for (const [k, v] of Object.entries(o)) if (re.test(k) && typeof v === "string" && v) return v;
-  for (const v of Object.values(o)) { const r = findStr(v, re, d + 1); if (r) return r; }
-  return "";
 }
 function collectLinks(o, path = "", out = []) {
   if (typeof o === "string") {
@@ -69,75 +82,182 @@ function collectLinks(o, path = "", out = []) {
   }
   return out;
 }
-const raw = (d) => `<p class="hint">Format data tidak dikenali. Kirim teks di bawah ini supaya parsernya bisa disesuaikan.</p><pre>${esc(JSON.stringify(d, null, 2).slice(0, 4000))}</pre>`;
-const fail = (e) => `<p class="hint">Gagal memuat (${esc(e.message)}). Coba lagi nanti.</p>`;
+function collectServers(o, out = [], q = "") {
+  if (Array.isArray(o)) o.forEach((x) => collectServers(x, out, q));
+  else if (o && typeof o === "object") {
+    const id = o.serverId ?? o.server_id ?? o.serverID;
+    if (typeof id === "string" || typeof id === "number") {
+      const name = String(o.name || o.server || o.title || o.quality || "").trim();
+      out.push({ id: String(id), q, name, label: [q, name].filter(Boolean).join(" ") });
+    }
+    const nq = Array.isArray(o.serverList) ? String(o.title || "").trim() : q;
+    Object.values(o).forEach((v) => collectServers(v, out, nq));
+  }
+  return out;
+}
+function pickUrl(o, d = 0) {
+  if (typeof o === "string") return /^https?:\/\//.test(o) ? o : "";
+  if (!o || typeof o !== "object" || d > 5) return "";
+  for (const [k, v] of Object.entries(o))
+    if (/url|embed|src|iframe|link/i.test(k)) { const r = pickUrl(v, d + 1); if (r) return r; }
+  for (const v of Object.values(o)) { const r = pickUrl(v, d + 1); if (r) return r; }
+  return "";
+}
 
-/* --- navigasi --- */
+/* ---------- navigasi ---------- */
 function go(fn) { stack.push(fn); render(); }
+function swap(fn) { stack[stack.length - 1] = fn; render(); }
 function back() { if (stack.length > 1) { stack.pop(); render(); } }
 function render() {
+  window.scrollTo(0, 0);
   stack[stack.length - 1]();
   if (tg) stack.length > 1 ? tg.BackButton.show() : tg.BackButton.hide();
 }
 if (tg) tg.BackButton.onClick(back);
-const backBtn = () => (!tg && stack.length > 1 ? '<button class="alt" onclick="back()">Kembali</button>' : "");
-
-/* --- layar --- */
-async function home() {
-  root.innerHTML = '<h1>Anime pilihan</h1><p class="hint">Memuat…</p>';
-  try {
-    const list = await api("list");
-    root.innerHTML = '<h1>Anime pilihan</h1><div class="grid">' + list.map((a, i) =>
-      `<div class="card" data-i="${i}">${a.poster ? `<img src="${esc(a.poster)}" loading="lazy" alt="">` : ""}<p>${esc(a.title)}</p></div>`).join("") + "</div>";
-    root.querySelectorAll(".card").forEach((el) => el.onclick = () => go(() => detail(list[el.dataset.i])));
-  } catch (e) { root.innerHTML = fail(e); }
+app.addEventListener("click", (e) => {
+  const b = e.target.closest("[data-act]");
+  if (!b || !acts[b.dataset.act]) return;
+  tap();
+  acts[b.dataset.act](b);
+});
+const bar = () => (!tg && stack.length > 1 ? '<div class="bar"><button class="btn alt" data-act="back">← Kembali</button></div>' : "");
+function showError(e) {
+  app.innerHTML = bar() + `<div class="err"><p>Gagal memuat (${esc(e.message)}).</p><p class="hint">Server sumber kadang error atau kena batas request. Tunggu sebentar lalu coba lagi.</p><button class="btn" data-act="retry">Coba lagi</button></div>`;
+  acts = { back, retry: () => render() };
 }
 
+/* ---------- beranda ---------- */
+function home() {
+  const lw = store.get("last", {});
+  app.innerHTML = '<h1>Anime pilihan</h1><div class="grid">' + ANIME.map((a, i) =>
+    `<button class="card" data-act="open" data-i="${i}"><div class="im">${a.poster ? `<img src="${esc(a.poster)}" referrerpolicy="no-referrer" alt="">` : '<div class="ph">▶</div>'}</div><p>${esc(a.title)}</p>${lw[a.slug] ? `<span class="hint">Terakhir: ${esc(lw[a.slug].label)}</span>` : ""}</button>`).join("") + "</div>";
+  acts = { open: (b) => go(() => detail(ANIME[b.dataset.i])) };
+  loadPosters();
+}
+async function loadPosters() {
+  const cards = [...app.querySelectorAll(".card")];
+  for (let i = 0; i < ANIME.length; i++) {
+    const a = ANIME[i];
+    if (a.poster) continue;
+    try {
+      const d = await api("detail/" + encodeURIComponent(a.slug));
+      const x = d.data || d;
+      const p = x.poster || x.image || x.thumbnail;
+      const im = cards[i] && cards[i].querySelector(".im");
+      if (p && im && document.body.contains(im)) im.innerHTML = `<img src="${esc(p)}" referrerpolicy="no-referrer" alt="">`;
+    } catch { break; }
+  }
+}
+
+/* ---------- detail ---------- */
 async function detail(a) {
-  root.innerHTML = backBtn() + `<h1>${esc(a.title)}</h1><p class="hint">Memuat…</p>`;
+  app.innerHTML = bar() + `<h1>${esc(a.title)}</h1><div class="sk" style="height:160px"></div>`;
+  acts = { back };
   try {
     const d = await api("detail/" + encodeURIComponent(a.slug));
+    const x = d.data || d;
     const eps = findEpisodes(d);
-    if (!eps) { root.innerHTML = backBtn() + `<h1>${esc(a.title)}</h1>` + raw(d); return; }
-    const poster = a.poster || findStr(d, /poster|image|thumb|cover/i);
-    const syn = findStr(d, /synopsis|sinopsis|description/i);
-    root.innerHTML = backBtn() + `<h1>${esc(a.title)}</h1>` +
-      (poster ? `<img class="poster" src="${esc(poster)}" alt="">` : "") +
-      (syn ? `<p class="hint">${esc(syn.slice(0, 400))}</p>` : "") +
-      '<div style="clear:both"></div><div class="eps">' + eps.map((ep, i) => {
-        const label = ep.title || ep.episode || ep.name || "Ep " + (i + 1);
-        return `<button data-i="${i}">${esc(String(label).slice(0, 24))}</button>`;
-      }).join("") + "</div>";
-    root.querySelectorAll(".eps button").forEach((b) => b.onclick = () => {
-      const ep = eps[b.dataset.i];
-      const slug = last(ep.slug || ep.endpoint || ep.episodeId || ep.id || "");
-      go(() => play(a, slug, b.textContent));
-    });
-  } catch (e) { root.innerHTML = backBtn() + fail(e); }
+    if (!eps) throw new Error("daftar episode tidak ditemukan");
+    const seen = new Set(store.get("seen:" + a.slug, []));
+    const lw = store.get("last", {})[a.slug];
+    const poster = a.poster || x.poster || x.image || x.thumbnail || "";
+    const syn = x.synopsis && Array.isArray(x.synopsis.paragraphs) ? x.synopsis.paragraphs.join(" ") : "";
+    const chips = [x.status, x.score && "★ " + x.score, x.type, x.episodes && x.episodes + " eps",
+      ...(x.genreList || []).map((g) => g.title).slice(0, 4)].filter(Boolean);
+    const order = store.get("order", "new");
+    const list = order === "old" ? [...eps].reverse() : eps;
+    const idOf = (ep) => last(ep.episodeId || ep.slug || ep.endpoint || ep.id || "");
+    const lab = (ep, i) => (ep.eps != null ? "Ep " + ep.eps : String(ep.title || ep.episode || ep.name || "Ep " + (i + 1)).slice(0, 12));
+
+    app.innerHTML = bar() + `<h1>${esc(a.title)}</h1>
+      <div class="top">${poster ? `<img src="${esc(poster)}" referrerpolicy="no-referrer" alt="">` : ""}
+        <div class="meta">${chips.map((t) => `<span class="chip">${esc(t)}</span>`).join("")}</div></div>
+      ${syn ? `<p class="syn" id="syn">${esc(syn)}</p><button class="link" data-act="more">Selengkapnya</button>` : ""}
+      ${lw ? `<button class="btn full" style="margin-top:8px" data-act="play" data-id="${esc(lw.id)}" data-l="${esc(lw.label)}">▶ Lanjutkan ${esc(lw.label)}</button>` : ""}
+      <h2>Episode (${eps.length}) <button class="link" data-act="order" style="float:right;text-transform:none;letter-spacing:0;padding:0">${order === "new" ? "Terbaru dulu" : "Terlama dulu"}</button></h2>
+      <div class="eps">${list.map((ep, i) => {
+        const id = idOf(ep), l = lab(ep, i);
+        return `<button class="btn${seen.has(id) ? " seen" : ""}${lw && lw.id === id ? " cur" : ""}" data-act="play" data-id="${esc(id)}" data-l="${esc(l)}">${esc(l)}</button>`;
+      }).join("")}</div>`;
+    acts = {
+      back,
+      more: (b) => {
+        const s = document.getElementById("syn");
+        s.classList.toggle("open");
+        b.textContent = s.classList.contains("open") ? "Sembunyikan" : "Selengkapnya";
+      },
+      order: () => { store.set("order", order === "new" ? "old" : "new"); render(); },
+      play: (b) => go(() => play(a, b.dataset.id, b.dataset.l)),
+    };
+  } catch (e) { showError(e); }
 }
 
-async function play(a, slug, label) {
-  root.innerHTML = backBtn() + `<h1>${esc(label)}</h1><p class="hint">Memuat…</p>`;
+/* ---------- player ---------- */
+async function play(a, id, label) {
+  app.innerHTML = bar() + '<div class="pl">Memuat…</div>';
+  acts = { back };
   try {
-    const d = await api(`episode/${encodeURIComponent(slug)}?s=${encodeURIComponent(a.source)}`);
-    const links = [...new Set(collectLinks(d))];
-    if (!links.length) { root.innerHTML = backBtn() + `<h1>${esc(label)}</h1>` + raw(d); return; }
-    root.innerHTML = backBtn() + `<h1>${esc(label)}</h1><div id="box"></div><div class="row">` +
-      links.map((_, i) => `<button class="alt" data-i="${i}">Server ${i + 1}</button>`).join("") + "</div>";
-    const pick = (i) => {
-      const u = links[i];
-      document.getElementById("box").innerHTML = /\.(mp4|m3u8|webm)(\?|$)/i.test(u)
-        ? `<video class="player" src="${esc(u)}" controls playsinline></video>`
-        : `<iframe class="player" src="${esc(u)}" allowfullscreen allow="fullscreen; autoplay" referrerpolicy="no-referrer"></iframe>`;
-      root.querySelectorAll(".row button").forEach((b, j) => b.classList.toggle("on", j === i));
+    const d = await api(`episode/${encodeURIComponent(id)}?s=${encodeURIComponent(a.source)}`);
+    const x = d.data || d;
+
+    const no = String(x.title || "").match(/Episode\s*(\d+)/i);
+    const lbl = no ? "Ep " + no[1] : label;
+    const lw = store.get("last", {}); lw[a.slug] = { id, label: lbl }; store.set("last", lw);
+    const sn = new Set(store.get("seen:" + a.slug, [])); sn.add(id); store.set("seen:" + a.slug, [...sn]);
+
+    const opts = [], su = new Set(), ss = new Set();
+    const addUrl = (u, l) => { if (u && !su.has(u)) { su.add(u); opts.push({ url: u, label: l, q: "", name: l }); } };
+    addUrl(x.defaultStreamingUrl, "Utama");
+    collectLinks(d).forEach((u) => addUrl(u, "Server"));
+    collectServers(d).forEach((s) => { if (!ss.has(s.id)) { ss.add(s.id); opts.push(s); } });
+    if (!opts.length) throw new Error("link nonton tidak ditemukan");
+
+    const gk = [], groups = {};
+    opts.forEach((o, i) => { const k = o.q || ""; if (!groups[k]) { groups[k] = []; gk.push(k); } groups[k].push([o, i]); });
+    gk.sort((p, q) => (p === "" ? -1 : q === "" ? 1 : 0));
+    const srvHtml = gk.map((k) => `<h2>${k ? esc(k) : "Pemutar"}</h2><div class="row">` +
+      groups[k].map(([o, i]) => `<button class="btn alt" data-act="srv" data-i="${i}">${esc(k ? o.name || o.label : o.label)}</button>`).join("") + "</div>").join("");
+
+    const pv = x.prevEpisode && x.prevEpisode.episodeId, nx = x.nextEpisode && x.nextEpisode.episodeId;
+    app.innerHTML = bar() + `<h1 style="font-size:17px">${esc(x.title || label)}</h1><p class="sub">${esc(a.title)}</p>
+      <div class="pl" id="pl">Memuat…</div>
+      ${pv || nx ? `<div class="row two" style="margin-top:10px">${pv ? `<button class="btn alt" data-act="nav" data-id="${esc(pv)}">← Sebelumnya</button>` : ""}${nx ? `<button class="btn alt" data-act="nav" data-id="${esc(nx)}">Berikutnya →</button>` : ""}</div>` : ""}
+      <div style="margin-top:8px"><button class="btn alt full" data-act="ext">Buka di browser</button></div>
+      <p class="hint" style="margin:8px 2px 0">Layar kosong atau ikon sedih? Pilih server lain di bawah, atau buka di browser.</p>
+      ${srvHtml}`;
+
+    let curUrl = "";
+    const choose = async (i) => {
+      const o = opts[i], pl = document.getElementById("pl");
+      app.querySelectorAll('[data-act="srv"]').forEach((b) => b.classList.toggle("on", +b.dataset.i === i));
+      store.set("pref", o.label);
+      try {
+        let u = o.url;
+        if (!u) {
+          pl.textContent = "Memuat server…";
+          const s = await api(`server/${encodeURIComponent(o.id)}?s=${encodeURIComponent(a.source)}`);
+          u = pickUrl(s);
+          if (!u) throw new Error("link server tidak ditemukan");
+        }
+        curUrl = u;
+        pl.innerHTML = /\.(mp4|m3u8|webm)(\?|$)/i.test(u)
+          ? `<video src="${esc(u)}" controls playsinline></video>`
+          : `<iframe src="${esc(u)}" allowfullscreen allow="fullscreen; autoplay" referrerpolicy="no-referrer"></iframe>`;
+      } catch (e) { pl.textContent = "Server ini gagal: " + e.message; }
     };
-    root.querySelectorAll(".row button").forEach((b) => b.onclick = () => pick(+b.dataset.i));
-    pick(0);
-  } catch (e) { root.innerHTML = backBtn() + fail(e); }
+    acts = {
+      back,
+      srv: (b) => choose(+b.dataset.i),
+      nav: (b) => swap(() => play(a, b.dataset.id, "Episode")),
+      ext: () => { if (!curUrl) return; tg ? tg.openLink(curUrl) : window.open(curUrl, "_blank"); },
+    };
+    const pref = store.get("pref", "");
+    const first = opts.findIndex((o) => o.label === pref);
+    choose(first < 0 ? 0 : first);
+  } catch (e) { showError(e); }
 }
 
 go(home);
 </script>
-<script src="play.js"></script>
 </body>
 </html>
