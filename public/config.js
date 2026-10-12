@@ -5,7 +5,7 @@ const BASE = "https://www.sankavollerei.web.id";
 // GANTI dengan anime pilihanmu (dua baris ini contoh dari dokumentasi).
 const ANIME = [
   { source: "otakudesu", slug: "enen-shouboutai-season-3-p2-sub-indo", title: "Enen no Shouboutai S3 P2", poster: "" },
-  { source: "animasu", slug: "one-piece-sub-indonesia", title: "One Piece", poster: "" },
+  { source: "otakudesu", slug: "lv999-murabito-sub-indo", title: "Lv999 no Murabito", poster: "" },
 ];
 
 // Path tiap source berbeda-beda (otakudesu tanpa awalan nama source).
