@@ -235,58 +235,6 @@ function toggleColl(b) {
 const redraw = () => stack[stack.length - 1]();
 let editing = false, sq = "", sres = null, sraw = "";
 
-/* ---------- beranda ---------- */
-function home() {
-  const items = coll();
-  const lw = store.get("last", {});
-  const recent = items.filter((a) => lw[a.slug]).sort((x, y) => (lw[y.slug].t || 0) - (lw[x.slug].t || 0))[0];
-  let html = `<header class="hd"><div class="brand"><span class="logo">${I.play}</span>Stream</div></header>
-    <button class="sbar" data-act="search">${I.search}Cari anime untuk ditambahkan</button>`;
-  if (recent) {
-    const l = lw[recent.slug];
-    html += `<h2 class="sec">Lanjut menonton</h2>
-      <button class="hero" data-act="resume" data-slug="${esc(recent.slug)}">
-        <div class="bg" data-pslug="${esc(recent.slug)}">${img(posterOf(recent))}</div><div class="shade"></div>
-        <div class="info"><span class="tag">${esc(l.label)}</span><strong>${esc(recent.title)}</strong></div>
-        <span class="fab">${I.play}</span></button>`;
-  }
-  html += `<div class="sec-row"><h2 class="sec">Koleksi <span>${items.length}</span></h2>${items.length ? `<button class="link" data-act="edit">${editing ? "Selesai" : "Edit"}</button>` : ""}</div>`;
-  if (!items.length) {
-    html += `<div class="empty"><p>Koleksi masih kosong.</p><button class="btn pri" data-act="search">${I.search}Cari anime</button></div>`;
-  } else {
-    html += '<div class="grid">' + items.map((a, i) => {
-      const l = lw[a.slug], p = posterOf(a);
-      return `<div class="card" style="--d:${i * 45}ms"><button class="cb" data-act="open" data-i="${i}"><div class="im" data-pslug="${esc(a.slug)}">${p ? img(p) : `<div class="ph">${esc(a.title.charAt(0))}</div>`}${l ? `<span class="badge">${I.play}${esc(l.label)}</span>` : ""}</div><p>${esc(a.title)}</p></button>${editing ? `<button class="rm" data-act="del" data-i="${i}" aria-label="Hapus dari koleksi">${I.x}</button>` : ""}</div>`;
-    }).join("") + "</div>";
-  }
-  show(html, { still: editing });
-  acts = {
-    search: () => go(search),
-    edit: () => { editing = !editing; redraw(); },
-    open: (b) => go(() => detail(items[b.dataset.i])),
-    del: (b) => { delColl(items[b.dataset.i].slug); redraw(); },
-    resume: (b) => { const a = items.find((x) => x.slug === b.dataset.slug), l = lw[a.slug]; go(() => play(a, l.id, l.label)); },
-  };
-  loadPosters();
-}
-function setPoster(slug, url) {
-  document.querySelectorAll(`[data-pslug="${slug}"]`).forEach((el) => {
-    if (el.querySelector("img")) return;
-    const ph = el.querySelector(".ph"); if (ph) ph.remove();
-    el.insertAdjacentHTML("afterbegin", img(url));
-  });
-}
-async function loadPosters() {
-  for (const a of coll()) {
-    if (posterOf(a)) continue;
-    try {
-      const d = await api("detail/" + encodeURIComponent(a.slug) + "?s=" + a.source);
-      const x = d.data || d, p = x.poster || x.image || x.thumbnail;
-      if (p) { store.set("poster:" + a.slug, p); setPoster(a.slug, p); }
-    } catch { break; }
-  }
-}
-
 /* ---------- pencarian ---------- */
 function findAnimeList(o, d = 0) {
   if (!o || typeof o !== "object" || d > 4) return [];
