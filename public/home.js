@@ -41,7 +41,7 @@ function home() {
   html += '<div id="upd"></div>';
   show(html, { still: editing });
   acts = {
-    search: () => go(search),
+    search: () => goTab("search"),
     edit: () => { editing = !editing; redraw(); },
     open: (b) => go(() => detail(items[b.dataset.i])),
     del: (b) => { delColl(items[b.dataset.i].slug); redraw(); },

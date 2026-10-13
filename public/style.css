@@ -169,3 +169,17 @@ h1,h2,p{margin:0}
 .nw{flex:none;font-size:10px;font-weight:800;letter-spacing:.06em;padding:4px 8px;border-radius:99px;background:linear-gradient(135deg,var(--ac),var(--ac2));color:#1a0d0a}
 .pp{flex:none;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:var(--s2)}
 .pp svg{width:14px;height:14px;fill:currentColor;stroke:none}
+
+/* NimeX nav */
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:30;display:none;justify-content:center;padding:8px 12px calc(8px + env(safe-area-inset-bottom,0px));background:rgba(12,11,16,.84);-webkit-backdrop-filter:blur(18px) saturate(1.4);backdrop-filter:blur(18px) saturate(1.4);border-top:1px solid rgba(255,255,255,.06)}
+body.hasnav:not(.kb) .nav{display:flex}
+body.hasnav .page{padding-bottom:calc(104px + env(safe-area-inset-bottom,0px))}
+.nav .in{display:flex;width:100%;max-width:520px}
+.nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:2px 0;color:var(--dim);font-size:11px;font-weight:700;transition:color .15s}
+.nav .ic{width:58px;height:30px;border-radius:15px;display:grid;place-items:center;transition:background .2s var(--ease),transform .12s var(--ease)}
+.nav button:active .ic{transform:scale(.92)}
+.nav button.on{color:var(--fg)}
+.nav button.on .ic{background:rgba(255,106,85,.17);color:var(--ac2)}
+.pg{display:flex;align-items:center;justify-content:space-between;padding:6px 0 18px}
+.pg h1{font-size:26px;font-weight:800;letter-spacing:-.03em;display:flex;align-items:center;gap:10px}
+.pg h1 span{font-size:12px;font-weight:700;background:var(--s2);color:var(--mut);padding:3px 10px;border-radius:99px;letter-spacing:0}

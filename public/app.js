@@ -72,6 +72,7 @@ function render() {
   window.scrollTo(0, 0);
   stack[stack.length - 1]();
   if (tg) stack.length > 1 ? tg.BackButton.show() : tg.BackButton.hide();
+  if (typeof updateNav === "function") updateNav();
 }
 if (tg) tg.BackButton.onClick(back);
 app.addEventListener("click", (e) => {
